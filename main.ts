@@ -1,8 +1,12 @@
+export interface GlobalWithCognitoFix extends Global {
+  fetch: any;
+}
+declare const global: GlobalWithCognitoFix;
+global.fetch = require("node-fetch").default;
 import fs from "fs";
 import path from "path";
 import { getScoreData } from "./lib/getScoreData";
 import { DDClient } from "./lib/ddClient";
-
 interface Metrics {
   [metric: string]: number;
 }
