@@ -18,3 +18,9 @@ jobs:
         run: |
           npm install -g @lhci/cli@0.12.x
           lhci autorun
+      - run: npm install
+      - run: npx esbuild main.ts --bundle --outfile=main.js --platform=node --minify
+      - name: Send metrics to Datadog
+        run: node main.js
+        env:
+          DD_API_KEY: ${{ secrets.DD_API_KEY }}
