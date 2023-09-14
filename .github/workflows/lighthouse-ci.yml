@@ -1,26 +1,23 @@
-name: CI
-on: [push]
+name: Lighthouse CI
+on:
+  pull_request:
+    types: [opened, reopened]
+
 jobs:
   lhci:
     name: Lighthouse
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js 16.x
+      - name: Use Node.js LTS
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: "lts/*"
       - name: npm install, build
         run: |
           npm install
           npm run build
-      - name: run Lighthouse CI
+      - name: Connect next server & run Lighthouse CI
         run: |
           npm install -g @lhci/cli@0.12.x
-          lhci autorun
-      - run: npm install
-      - run: npx esbuild main.ts --bundle --outfile=main.js --platform=node --minify
-      - name: Send metrics to Datadog
-        run: node main.js
-        env:
-          DD_API_KEY: ${{ secrets.DD_API_KEY }}
+          lhci autorun --collect.url=https://tv.dmm.com/vod/ --upload.target=temporary-public-storage --staticDistDir=./build
